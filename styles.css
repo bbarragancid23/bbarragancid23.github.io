@@ -170,14 +170,13 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 200vh;
+    min-height: 300vh;
     padding: 50px 0;
 }
 
 .project-card {
     position: sticky;
     top: 50vh;
-    transform: translateY(-50%);
     width: 280px;
     height: 350px;
     background: white;
@@ -190,65 +189,70 @@ body {
     justify-content: space-between;
     text-decoration: none;
     color: var(--text-primary);
-    transition: transform 0.3s ease, box-shadow 0.3s ease, z-index 0.3s ease;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                opacity 0.4s ease,
+                box-shadow 0.3s ease;
     opacity: 0;
-    transform: translateY(-50%) translateX(-200px) rotate(-5deg);
     z-index: 1;
     margin-bottom: -320px;
+    will-change: transform, opacity, z-index;
 }
 
-.project-card.visible {
-    opacity: 1;
-    animation: slideInCard 0.6s ease-out forwards;
+/* Initial state - cards offscreen */
+.project-card:not(.visible) {
+    transform: translateY(-50%) translateX(-200px) rotate(-5deg);
 }
 
-.project-card:hover {
-    transform: translateY(-50%) translateY(-10px) scale(1.05) !important;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-    z-index: 100 !important;
-}
-
-.project-card:nth-child(even) {
+.project-card:nth-child(even):not(.visible) {
     transform: translateY(-50%) translateX(200px) rotate(5deg);
 }
 
-.project-card:nth-child(even).visible {
-    animation: slideInCardRight 0.6s ease-out forwards;
+/* Visible cards - stacked position */
+.project-card.visible {
+    opacity: 1;
 }
 
-.project-card:nth-child(odd).visible {
-    animation: slideInCardLeft 0.6s ease-out forwards;
-}
-
-/* Stacking effect - each card slightly offset with rotation for depth */
-.project-card[data-index="0"].visible {
-    z-index: 6;
+/* Top card (index 0 in stack) */
+.project-card.visible[data-stack-pos="0"] {
     transform: translateY(-50%) translateX(0) rotate(0deg);
 }
 
-.project-card[data-index="1"].visible {
-    z-index: 5;
+/* Second card (index 1 in stack) */
+.project-card.visible[data-stack-pos="1"] {
     transform: translateY(-50%) translateX(8px) translateY(8px) rotate(2deg);
 }
 
-.project-card[data-index="2"].visible {
-    z-index: 4;
+/* Third card (index 2 in stack) */
+.project-card.visible[data-stack-pos="2"] {
     transform: translateY(-50%) translateX(-8px) translateY(16px) rotate(-2deg);
 }
 
-.project-card[data-index="3"].visible {
-    z-index: 3;
+/* Fourth card (index 3 in stack) */
+.project-card.visible[data-stack-pos="3"] {
     transform: translateY(-50%) translateX(12px) translateY(24px) rotate(3deg);
 }
 
-.project-card[data-index="4"].visible {
-    z-index: 2;
+/* Fifth card (index 4 in stack) */
+.project-card.visible[data-stack-pos="4"] {
     transform: translateY(-50%) translateX(-12px) translateY(32px) rotate(-3deg);
 }
 
-.project-card[data-index="5"].visible {
-    z-index: 1;
+/* Sixth card and beyond (index 5+ in stack) */
+.project-card.visible[data-stack-pos="5"],
+.project-card.visible[data-stack-pos="6"],
+.project-card.visible[data-stack-pos="7"] {
     transform: translateY(-50%) translateX(8px) translateY(40px) rotate(1deg);
+}
+
+/* Hover effect - only for top card (which has pointer-events: auto) */
+.project-card:hover {
+    transform: translateY(-50%) translateY(-10px) scale(1.05) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Disable hover for non-interactive cards */
+.project-card[style*="pointer-events: none"] {
+    cursor: default;
 }
 
 .project-thumbnail {
@@ -444,35 +448,7 @@ body {
     }
 }
 
-@keyframes slideInCard {
-    from {
-        opacity: 0;
-        transform: translateY(-50%) translateX(-200px) rotate(-5deg);
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideInCardLeft {
-    from {
-        opacity: 0;
-        transform: translateY(-50%) translateX(-200px) rotate(-5deg);
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes slideInCardRight {
-    from {
-        opacity: 0;
-        transform: translateY(-50%) translateX(200px) rotate(5deg);
-    }
-    to {
-        opacity: 1;
-    }
-}
+/* Animations removed - using CSS transitions instead for smoother control */
 
 /* Responsive Design */
 @media (max-width: 768px) {
