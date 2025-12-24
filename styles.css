@@ -140,4 +140,131 @@ body {
     }
 }
 
+/* About Section */
+.about {
+    position: relative;
+    background: var(--black);
+    color: var(--white);
+    padding: 120px 6vw;
+    overflow: hidden;
+}
+
+.about-overlay {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35) 80%, rgba(0,0,0,0.8) 100%),
+        url('photos/background.jpg') center/cover no-repeat;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.about-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 120px;
+    z-index: 1;
+}
+
+.about-header h2 {
+    font-size: 2.6rem;
+    letter-spacing: 0.04em;
+}
+
+.about-content {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+    z-index: 1;
+}
+
+.photo-stack {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: 360px;
+    margin: 0 auto;
+}
+
+.photo-circle {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 4px solid var(--white);
+    box-shadow: var(--shadow);
+    background-size: cover;
+    background-position: center;
+    transform: translate(-50%, -50%);
+    /* transition: transform 0.18s ease-out; */
+    transition: 0.3s ease;
+    will-change: transform;
+    animation: floatSlow 5s ease-in-out infinite;
+}
+
+.circle-me {
+    top: 0%;
+    left: 15%;
+    background-image: url('photos/me.jpg');
+    z-index: 3;
+    animation-duration: 5.5s;
+}
+
+.circle-dog {
+    top: 65%;
+    left: 35%;
+    background-image: url('photos/dog.jpg');
+    z-index: 2;
+    animation-duration: 6.2s;
+}
+
+.circle-cat {
+    top: 25%;
+    left: 75%;
+    background-image: url('photos/cat.jpg');
+    z-index: 1;
+    animation-duration: 6.8s;
+}
+
+@keyframes floatSlow {
+    0% { transform: translate(-50%, -50%) translate(0, 0); }
+    50% { transform: translate(-50%, -50%) translate(0, -10px); }
+    100% { transform: translate(-50%, -50%) translate(0, 0); }
+}
+
+.about-text {
+    position: relative;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 28px;
+    backdrop-filter: blur(6px);
+    box-shadow: var(--shadow);
+}
+
+.about-text .placeholder {
+    color: var(--gray);
+    line-height: 1.7;
+    font-size: 1.05rem;
+}
+
+/* Responsive for About */
+@media (max-width: 900px) {
+    .about {
+        padding: 90px 6vw;
+    }
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .photo-stack {
+        height: 320px;
+    }
+    .photo-circle {
+        width: 150px;
+        height: 150px;
+    }
+}
 
