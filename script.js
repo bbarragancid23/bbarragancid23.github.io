@@ -9,6 +9,9 @@ const headerObserver = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             entry.target.classList.add('visible');
         }
+        else {
+            entry.target.classList.remove('visible');
+        }
     });
 }, headerObserverOptions);
 
@@ -196,5 +199,131 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', updateProjectCards);
+    
+    // Typewriter animation for about text
+    initTypewriter();
 });
+
+// Typewriter animation for code content
+function initTypewriter() {
+    const codeElement = document.querySelector('.about-text .code-content');
+    if (!codeElement) return;
+    
+    // Store original text
+    const originalText = codeElement.textContent;
+    
+    // Clear the text initially
+    codeElement.textContent = '';
+    
+    // Observer to trigger when section is visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !codeElement.dataset.typed) {
+                codeElement.dataset.typed = 'true';
+                typeWriter(codeElement, originalText);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    const aboutSection = document.querySelector('.about');
+    if (aboutSection) {
+        observer.observe(aboutSection);
+    }
+}
+
+function typeWriter(element, text, index = 0, hasHighlighted = false) {
+    if (index < text.length) {
+        const currentText = text.substring(0, index + 1);
+        const char = text[index];
+        
+        // Once we've highlighted once, always use innerHTML (highlighted) to preserve colors
+        // Before first highlight, use textContent for raw typing
+        if (hasHighlighted) {
+            // We've already highlighted, so set raw text and re-highlight to preserve colors
+            element.textContent = currentText;
+            highlightCodeSyntax();
+        } else {
+            // Not highlighted yet, just set raw text
+            element.textContent = currentText;
+            
+            // Apply syntax highlighting after whitespace characters (spaces, newlines, tabs)
+            // This makes it look like a real IDE with live syntax highlighting
+            if (/\s/.test(char)) {
+                highlightCodeSyntax();
+                hasHighlighted = true; // Mark that we've started highlighting
+            }
+        }
+        
+        // Adjust speed - faster for regular characters, slower for newlines
+        const delay = char === '\n' ? 40 : 20; // 20ms per character (quick)
+        setTimeout(() => typeWriter(element, text, index + 1, hasHighlighted), delay);
+    } else {
+        // Typing complete - final syntax highlighting to catch anything at the end
+        element.textContent = text;
+        highlightCodeSyntax();
+    }
+}
+
+// Syntax highlighting function for Python-like code
+function highlightCodeSyntax() {
+    const codeElements = document.querySelectorAll('.code-content');
+    codeElements.forEach(element => {
+        let text = element.textContent;
+        
+        // Store original text to avoid double highlighting
+        const originalText = text;
+        
+        // First, handle strings (to avoid highlighting keywords inside strings)
+        const stringPlaceholders = [];
+        text = text.replace(/(["'`])(?:(?=(\\?))\2.)*?\1/g, (match) => {
+            const placeholder = `__STRING_${stringPlaceholders.length}__`;
+            stringPlaceholders.push(match);
+            return placeholder;
+        });
+        
+        // Handle triple-quoted strings
+        text = text.replace(/(["'`]{3})(?:(?=(\\?))\2.)*?\1/g, (match) => {
+            const placeholder = `__STRING_${stringPlaceholders.length}__`;
+            stringPlaceholders.push(match);
+            return placeholder;
+        });
+        
+        // Handle comments (to avoid highlighting keywords in comments)
+        const commentPlaceholders = [];
+        text = text.replace(/#.*$/gm, (match) => {
+            const placeholder = `__COMMENT_${commentPlaceholders.length}__`;
+            commentPlaceholders.push(match);
+            return placeholder;
+        });
+        
+        // Python keywords (blue) - but not def/class as we handle those separately
+        const keywords = /\b(if|elif|else|for|while|return|import|from|as|try|except|finally|with|and|or|not|in|is|None|True|False|break|continue|pass|lambda|yield|async|await|global|nonlocal)\b/g;
+        text = text.replace(keywords, '<span class="code-keyword">$&</span>');
+        
+        // Function definitions (def + function name in red)
+        text = text.replace(/\bdef\s+(\w+)/g, '<span class="code-keyword">def</span> <span class="code-function">$1</span>');
+        
+        // Class definitions (class + class name in red)
+        text = text.replace(/\bclass\s+(\w+)/g, '<span class="code-keyword">class</span> <span class="code-class">$1</span>');
+        
+        // Numbers (slightly purple)
+        text = text.replace(/\b\d+\.?\d*\b/g, '<span class="code-number">$&</span>');
+
+        // Self (slightly purple)
+        text = text.replace(/\bself\b/g, '<span class="code-self">self</span>');
+        
+        // Restore comments with highlighting
+        commentPlaceholders.forEach((comment, index) => {
+            text = text.replace(`__COMMENT_${index}__`, `<span class="code-comment">${comment}</span>`);
+        });
+        
+        // Restore strings with highlighting
+        stringPlaceholders.forEach((str, index) => {
+            text = text.replace(`__STRING_${index}__`, `<span class="code-string">${str}</span>`);
+        });
+        
+        element.innerHTML = text;
+    });
+}
 

@@ -77,9 +77,7 @@ body {
     background: var(--white);
     border-radius: 50% 50% 0 0;
     clip-path: ellipse(100% 70% at 50% 50%);
-    transform: translateY(80px);
-    opacity: 0;
-    animation: riseUp 0.5s ease-out forwards 0s;
+    opacity: 1;
 }
 
 .mascot-image {
@@ -89,9 +87,8 @@ body {
     bottom: 16%;
     left: -8%;
     max-width: 120%;
-    transform: translateY(100px);
-    opacity: 0;
-    animation: riseUp 0.5s ease-out forwards 0.15s, float 3s ease-in-out infinite 0.7s;
+    opacity: 1;
+    animation: float 3s ease-in-out infinite 0.7s;
 }
 
 .mascot-mask {
@@ -101,21 +98,8 @@ body {
     bottom: -8%;
     height: 50%;
     background: var(--black);
-    transform: translateY(120px);
-    opacity: 0;
-    animation: riseUp 0.4s ease-out forwards 0.3s;
+    opacity: 1;
     box-shadow: var(--shadow);
-}
-
-@keyframes riseUp {
-    from {
-        transform: translateY(120px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 }
 
 @keyframes float {
@@ -149,16 +133,6 @@ body {
     overflow: hidden;
 }
 
-.about-overlay {
-    position: absolute;
-    inset: 0;
-    background:
-        linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.35) 20%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.35) 80%, rgba(0,0,0,0.8) 100%),
-        url('photos/background.jpg') center/cover no-repeat;
-    opacity: 0.6;
-    pointer-events: none;
-}
-
 .about-header {
     position: relative;
     text-align: center;
@@ -175,8 +149,7 @@ body {
 }
 
 .about-header h2 {
-    font-size: 2.6rem;
-    letter-spacing: 0.04em;
+    font-size: 3.6rem;
 }
 
 .about-content {
@@ -184,7 +157,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 60px;
-    align-items: center;
+    align-items: start; /* Align items at the top to prevent shifting */
     z-index: 1;
 }
 
@@ -194,6 +167,8 @@ body {
     max-width: 420px;
     height: 360px;
     margin: 0 auto;
+    margin-top: 30%;
+    align-self: start; /* Keep photos at top, don't center vertically */
 }
 
 .photo-circle {
@@ -206,10 +181,11 @@ body {
     background-size: cover;
     background-position: center;
     transform: translate(-50%, -50%);
-    /* transition: transform 0.18s ease-out; */
+    transition: transform 0.18s ease-out;
     transition: 0.3s ease;
     will-change: transform;
     animation: floatSlow 5s ease-in-out infinite;
+    
 }
 
 .circle-me {
@@ -218,6 +194,7 @@ body {
     background-image: url('photos/me.jpg');
     z-index: 3;
     animation-duration: 5.5s;
+    
 }
 
 .circle-dog {
@@ -244,18 +221,89 @@ body {
 
 .about-text {
     position: relative;
+    align-self: start; /* Keep text at top, don't try to center */
     background: rgba(0,0,0,0.55);
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 16px;
     padding: 28px;
     backdrop-filter: blur(6px);
     box-shadow: var(--shadow);
+    /* Reserve space to prevent layout shift */
+    min-height: 400px; /* Adjust this to match your final text height */
 }
 
 .about-text .placeholder {
     color: var(--gray);
     line-height: 1.7;
     font-size: 1.05rem;
+}
+
+/* Code syntax highlighting styles */
+.about-text pre {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.about-text .code-content {
+    font-family: 'Courier New', Courier, monospace;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: #d4d4d4; /* Default text color */
+    display: block;
+}
+
+.code-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: #d4d4d4;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+    vertical-align: baseline;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+.code-keyword {
+    color: #569cd6; /* Blue for keywords (if, for, class, def, etc.) */
+}
+
+.code-string {
+    color: #6a8759; /* Green for strings */
+}
+
+.code-function {
+    color: #c22532; /* Red/Orange for function names (after def) */
+}
+
+.code-class {
+    color: #c22532; /* Red/Orange for class names (after class) */
+}
+
+.code-comment {
+    color: #6a9955; /* Green-gray for comments */
+}
+
+.code-number {
+    color: #d73075; /* Light green for numbers */
+}
+
+.code-self {
+    color: #d73075;
 }
 
 /* Projects Section */
@@ -280,14 +328,13 @@ body {
 }
 
 .projects-header h2 {
-    font-size: 2.6rem;
-    letter-spacing: 0.04em;
+    font-size: 4.6rem;
 }
 
 .projects-container {
     position: relative;
     width: 100%;
-    min-height: calc(100vh + 3 * 1200px); /* Space for 4 cards with spacing */
+    min-height: calc(100vh + 3.5 * 1200px); /* Space for 4 cards with spacing */
     overflow: visible;
 }
 
@@ -305,9 +352,6 @@ body {
     text-decoration: none;
     cursor: pointer;
     pointer-events: none;
-    /* transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                opacity 0.3s ease,
-                visibility 0.3s ease; */
 }
 
 .project-card.clickable {
