@@ -179,9 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Observe section headers for scroll-in animation
     const aboutHeader = document.querySelector('.about-header');
     const projectsHeader = document.querySelector('.projects-header');
+    const contactHeader = document.querySelector('.contact-header');
     
     if (aboutHeader) headerObserver.observe(aboutHeader);
     if (projectsHeader) headerObserver.observe(projectsHeader);
+    if (contactHeader) headerObserver.observe(contactHeader);
     
     // Initialize projects
     initProjects();
@@ -195,6 +197,19 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Initialize video playback control
     initVideoPlayback();
+    
+    // Prevent button click from bubbling to card link
+    const viewMoreButtons = document.querySelectorAll('.view-more-btn');
+    viewMoreButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Get the parent card link and trigger navigation
+            const cardLink = button.closest('.project-card');
+            if (cardLink && cardLink.href) {
+                window.location.href = cardLink.href;
+            }
+        });
+    });
 });
 
 // Video playback control - only play videos when visible

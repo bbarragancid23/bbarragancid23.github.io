@@ -223,13 +223,24 @@ body {
     position: relative;
     align-self: start; /* Keep text at top, don't try to center */
     background: rgba(0,0,0,0.55);
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.10);
     border-radius: 16px;
     padding: 28px;
     backdrop-filter: blur(6px);
     box-shadow: var(--shadow);
     /* Reserve space to prevent layout shift */
-    min-height: 400px; /* Adjust this to match your final text height */
+    min-height: 800px; /* Adjust this to match your final text height */
+    z-index: 1;
+}
+
+.mascot-leaning {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    bottom: 0%;
+    left: -0.5%;
+    max-width: 10%;
+    z-index: 999;
 }
 
 .about-text .placeholder {
@@ -334,7 +345,7 @@ body {
 .projects-container {
     position: relative;
     width: 100%;
-    min-height: calc(100vh + 3.5 * 1200px); /* Space for 4 cards with spacing */
+    min-height: calc(100vh + 4.5 * 1200px); /* Space for 4 cards with spacing */
     overflow: visible;
 }
 
@@ -386,9 +397,8 @@ body {
     position: absolute;
     inset: 0;
     overflow: hidden;
-    opacity: 0.7;
     z-index: 1;
-    transition: opacity 0.3s ease;
+    transition: filter 0.3s ease;
 }
 
 .project-thumbnail video {
@@ -397,20 +407,100 @@ body {
     object-fit: cover;
     object-position: center;
 }
-
+/* Darken on hover */
 .project-card:hover .project-thumbnail {
-    opacity: 0.9;
+    filter: brightness(0.4);
+}
+
+/* Less dimming for the 3rd project (Last Stand) since video is darker */
+.project-card:nth-child(3):hover .project-thumbnail {
+    filter: brightness(0.7);
+}
+
+/* Overlay for button */
+.project-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none; /* Allow clicks to pass through to the card link */
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+.view-more-btn {
+    background: var(--white);
+    color: var(--black);
+    border: none;
+    padding: 16px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transform: translateY(20px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    pointer-events: auto; /* Make button clickable */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.project-card:hover .view-more-btn {
+    transform: translateY(0);
+}
+
+.view-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Project info box at bottom */
+.project-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 30px 40px;
+    z-index: 3;
+    transform: translateY(100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.project-card:hover .project-info {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
 }
 
 .project-title {
-    position: absolute;
-    bottom: 40px;
-    left: 40px;
     font-size: 2.4rem;
     font-weight: 600;
     color: var(--white);
-    z-index: 2;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    margin-bottom: 12px;
+}
+
+.project-description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.6;
+}
+
+.mascot-confused {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    bottom: 0%;
+    left: 0%;
+    max-width: 10%;
+    z-index: 999;
 }
 
 /* Responsive for Projects */
@@ -430,12 +520,103 @@ body {
         height: 70vh;
     }
     
+    .project-info {
+        padding: 20px 30px;
+    }
+    
     .project-title {
         font-size: 1.8rem;
-        bottom: 30px;
-        left: 30px;
+        margin-bottom: 8px;
+    }
+    
+    .project-description {
+        font-size: 1rem;
+    }
+    
+    .view-more-btn {
+        padding: 14px 32px;
+        font-size: 1rem;
     }
 }
+
+/* Contact Section */
+
+.contact {
+    position: relative;
+    background: var(--black);
+    color: var(--white);
+    padding: 0 6vw;
+    overflow: hidden;
+    min-height: 75vh;
+}
+
+.contact-header {
+    position: relative;
+    text-align: center;
+    margin-bottom: 50px;
+    z-index: 1;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.contact-header.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.contact-header h2 {
+    font-size: 3.6rem;
+}
+
+.contact-description {
+    position: relative;
+    text-align: center;
+    padding-bottom: 5%;
+}
+
+.contact-description p {
+    font-size: large;
+    font-weight: 500;
+    word-spacing: 3px;
+}
+
+.contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    padding-bottom: 2%;
+}
+
+.contact-link {
+    padding: 15px 40px;
+    background: var(--white);
+    color: var(--black);
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block;
+}
+
+.contact-link:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+}
+
+.mascot-bowing {
+    position: relative;
+    inset: 0;
+    margin: auto;
+    bottom: 0%;
+    left: 40%;
+    max-width: 20%;
+}
+
+
 
 /* Responsive for About */
 @media (max-width: 900px) {
