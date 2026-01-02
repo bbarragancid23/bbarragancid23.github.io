@@ -53,7 +53,7 @@
             return "keep iterating..."
         return "done? never. always room to improve"
     
-    def happiness_level(self, job_offer = False):
+    def happiness_level(self, job_offer = None):
         if ("Python" in self.skills and 
             len(self.pets) > 0 and job_offer):
             return "high"
